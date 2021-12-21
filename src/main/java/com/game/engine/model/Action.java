@@ -12,7 +12,7 @@ public class Action {
     private ArrayList<Goto> transitions = new ArrayList<Goto>();
 
     private Instruction choiceInstruction;
-    private String choiceText;
+    private String choiceText, title;
 
     public void addVariable(String name, Variable variable) throws RedeclarationException {
         if (variables.containsKey(name)) {
@@ -44,6 +44,14 @@ public class Action {
 
     public void setChoiceInstruction(Instruction instruction) {
         this.choiceInstruction = instruction;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public ArrayList<Instruction> getInstructions() {

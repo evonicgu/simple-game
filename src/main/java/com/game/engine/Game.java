@@ -86,15 +86,14 @@ public class Game {
     }
 
     public void run() throws EngineException {
+        System.out.println("You are playing " + name);
         System.out.println("Loading...");
 
         try {
-            Thread.sleep(5);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             throw new EngineException("Error: loading was interrupted", e);
         }
-
-        System.out.println("You are playing the '" + name + "' game!");
 
         String currentActionName = startAction;
 
@@ -105,20 +104,32 @@ public class Game {
                 throw new EngineException("Error: unknown action " + currentActionName);
             }
 
-            for (var instruction : currentAction.getInstructions()) {
-                instruction.execute(currentAction, this);
+            if (!currentAction.getTitle().isEmpty()) {
+                System.out.println("\n\n"  + currentAction.getTitle() + '\n');
             }
 
             var transitions = currentAction.getTransitions();
 
-            if (transitions.isEmpty()) {
-                continue;
+            if (!currentAction.getChoiceText().isEmpty()) {
+                System.out.println(currentAction.getChoiceText() + '\n');
             }
 
-            System.out.println(currentAction.getChoiceText() + '\n');
-
             for (int i = 0; i < transitions.size(); ++i) {
-                System.out.println(i + 1 + ") " + transitions.get(i).getOption());
+                if (!transitions.get(i).getOption().isEmpty()) {
+                    System.out.println(i + 1 + ") " + transitions.get(i).getOption());
+
+                    if (i == transitions.size() - 1) {
+                        System.out.println();
+                    }
+                }
+            }
+
+            for (var instruction : currentAction.getInstructions()) {
+                instruction.execute(currentAction, this);
+            }
+
+            if (transitions.isEmpty()) {
+                continue;
             }
 
             var choiceInstruction = currentAction.getChoiceInstruction();
@@ -149,10 +160,19 @@ public class Game {
         name = root.getFirstChild().getTextContent();
         startAction = root.getElementsByTagName("start").item(0).getTextContent();
 
-        var declarations = root.getElementsByTagName("var");
+        var children = root.getChildNodes();
 
-        for (int i = 0; i < declarations.getLength(); ++i) {
-            var declaration = (Element) declarations.item(i);
+        for (int i = 0; i < children.getLength(); ++i) {
+            if (!(children.item(i) instanceof Element)) {
+                continue;
+            }
+
+            var declaration = (Element) children.item(i);
+
+            if (!declaration.getTagName().equals("var")) {
+                continue;
+            }
+
             String name = declaration.getAttribute("name");
             String type = declaration.getAttribute("type");
             String value = declaration.getAttribute("value");
@@ -174,12 +194,16 @@ public class Game {
             var actionElement = (Element) actionElements.item(i);
 
             String name = actionElement.getElementsByTagName("name").item(0).getTextContent();
+            String title = actionElement.getElementsByTagName("title").item(0).getTextContent();
 
             if (actions.containsKey(name)) {
                 throw new RedeclarationException(name);
             }
 
-            actions.put(name, parseAction(actionElement));
+            Action action = parseAction(actionElement);
+            action.setTitle(title);
+
+            actions.put(name, action);
         }
     }
 
