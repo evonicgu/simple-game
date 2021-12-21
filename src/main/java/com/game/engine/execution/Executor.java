@@ -267,6 +267,10 @@ public class Executor {
                 }
             }
             case PLUS -> {
+                if (lhsType.equals("string") || rhsType.equals("string")) {
+                    return new Variable(lhs.get().toString() + rhs.get().toString(), "string");
+                }
+
                 if (!lhsType.equals(rhsType)) {
                     throw new TypeError("Error: expected all operands to have the same type for '+' operator");
                 }
@@ -275,9 +279,7 @@ public class Executor {
                     throw new TypeError("Error: cannot use '+' operator on booleans");
                 }
 
-                if (lhsType.equals("string")) {
-                    return new Variable(lhs.<String>get() + rhs.<String>get(), "string");
-                } else if (lhsType.equals("int")) {
+                if (lhsType.equals("int")) {
                     return new Variable(lhs.<Integer>get() + rhs.<Integer>get(), "int");
                 } else {
                     return new Variable(lhs.<Double>get() + rhs.<Double>get(), "float");
