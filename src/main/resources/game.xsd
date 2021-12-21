@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="game">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="start" type="xs:string"/>
+
+                <xs:element name="var" type="variable" minOccurs="0" maxOccurs="unbounded"/>
+
+                <xs:element name="action" type="action" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="variable">
+        <xs:attribute name="type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="int"/>
+                    <xs:enumeration value="float"/>
+                    <xs:enumeration value="string"/>
+                    <xs:enumeration value="bool"/>
+                    <xs:enumeration value="int[]"/>
+                    <xs:enumeration value="float[]"/>
+                    <xs:enumeration value="string[]"/>
+                    <xs:enumeration value="bool[]"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+
+        <xs:attribute name="name" use="required" type="xs:string"/>
+
+        <xs:attribute name="value" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="action" mixed="true">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="var" type="variable"/>
+
+                <xs:element name="input">
+                    <xs:complexType>
+                        <xs:attribute name="expr" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="do">
+                    <xs:complexType>
+                        <xs:attribute name="expr" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="print">
+                    <xs:complexType>
+                        <xs:attribute name="expr" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+
+            <xs:element name="choice">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="text" type="xs:string"/>
+
+                        <xs:element name="goto" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="option" type="xs:string"/>
+
+                                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                        <xs:element name="input">
+                                            <xs:complexType>
+                                                <xs:attribute name="expr" type="xs:string" use="required"/>
+                                            </xs:complexType>
+                                        </xs:element>
+
+                                        <xs:element name="code">
+                                            <xs:complexType>
+                                                <xs:attribute name="expr" type="xs:string" use="required"/>
+                                            </xs:complexType>
+                                        </xs:element>
+
+                                        <xs:element name="print">
+                                            <xs:complexType>
+                                                <xs:attribute name="expr" type="xs:string" use="required"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:choice>
+                                </xs:sequence>
+
+                                <xs:attribute name="action" type="xs:string"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+
+                    <xs:attribute name="expr" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="instructions">
+
+    </xs:complexType>
+</xs:schema>

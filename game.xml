@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<game>
+    <name>Simple text game</name>
+    <start>Start action</start>
+
+    <var type="int[]" name="integers"/>
+    <var type="float" name="cord" value="1.0"/>
+
+    <action>
+        <name>Start action</name>
+
+        <choice expr="integers.get(integers.size() - 1)">
+            <text>Some thing very very long and very very interesting</text>
+            <goto action="Start action">
+                <option>Option 1</option>
+                <print expr="'h'"/>
+                <input expr="integer"/>
+            </goto>
+            <goto action="Third action">
+                <option>Option 2</option>
+            </goto>
+        </choice>
+    </action>
+</game>
